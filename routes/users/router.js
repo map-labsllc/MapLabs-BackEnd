@@ -1,5 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+
+const controller = require('./controller')
+
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -10,7 +13,7 @@ var router = express.Router();
 *  GET .../:login_service_id/:token
 *  params:
 *     login_service_id:
-*     token: 
+*     token:
 *  Lookup user:
 *     If found, return user object
 *     If not found, return user = "null"
