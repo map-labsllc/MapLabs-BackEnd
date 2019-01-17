@@ -1,3 +1,4 @@
+const model = require('./model')
 const validate = {
     int: (field, fieldName) => {
         const fieldAsInt = +field
@@ -20,7 +21,7 @@ module.exports = {
             const userId = validate.int(req.params.user_id, "user_id")
             const narrativeCode = validate.int(req.params.narrative_code, "narrative_code")
             const narrative = validate.string(req.body.narrative, "narrative")
-            
+
             return model.createOrUpdate({userId, narrativeCode, narrative})
         } catch(e) {
             //TODO: throw to error handling middleware
