@@ -6,5 +6,5 @@ const router = Router()
 router.post('/:user_id/:narrative_code', controller.create)
 //R
 router.get('/:user_id/:narrative_code', controller.getOne)
-//
-router.post('/:user_id/:narrative_code', controller.update)
+//U
+router.put('/:user_id/:narrative_code', controller.update)
