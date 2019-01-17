@@ -1,7 +1,13 @@
 const knex = require('../../knex')
 
 module.exports = {
-    createOrUpdate: function({userId, narrativeCode, narrative}) {
-        // return knex('narratives')
+    create: function({user_id, narrative_code, narrative}) {
+        return knex('narratives')
+        .insert({user_id, narrative_code, narrative})
+    },
+    update: function({user_id, narrative_code, narrative}) {
+        return knex('narratives')
+        .where({user_id, narrative_code})
+        .update({narrative})
     }
 }
