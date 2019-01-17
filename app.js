@@ -23,4 +23,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// ===========================================================
+// Error handler for next(object) / 500
+// ===========================================================
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  console.log("======================= APP ERROR IN CONTROLLER =======================");
+  console.log('status: ',status);
+  console.log('-------');
+  console.log('raw error: ',err);
+  console.log("^^^^^^^^^^^^^^^^^^^^^^^ APP ERROR IN CONTROLLER ^^^^^^^^^^^^^^^^^^^^^^");
+  res.status(status).json('' + err);
+  // next();
+});
+
 module.exports = app;
