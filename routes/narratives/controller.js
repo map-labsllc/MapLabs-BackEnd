@@ -20,11 +20,15 @@ module.exports = {
 
             return model.create({user_id: validatedUserId, narrative_code: validatedNarrativeCode, narrative: validatedNarrative})
                     .then(narrative => res.status(201).json({data: {narrative}}))
-                    .catch(e => next({
-                        status: 422, 
-                        message: `Narratives model.create failed with ${e.message}`,
-                    }))
+                    .catch(e => {
+                        console.error(e)
+                        return next({
+                            status: 422, 
+                            message: `Narratives model.create failed with ${e.message}`,
+                        })
+                    })
         } catch(e) {
+            console.error(e)
             return next({
                 status: 422, 
                 message: `Narratives controller.create failed with ${e.message}`,
@@ -37,11 +41,15 @@ module.exports = {
 
             return model.update({user_id: validatedUserId, narrative_code: validatedNarrativeCode, narrative: validatedNarrative})
                     .then(() => res.status(204).send())
-                    .catch(e => next({
-                        status: 422, 
-                        message: `Narratives model.create failed with ${e.message}`,
-                    }))
+                    .catch(e => {
+                        console.error(e)
+                        return next({
+                            status: 422, 
+                            message: `Narratives model.update failed with ${e.message}`,
+                        })
+                    })
         } catch(e) {
+            console.error(e)
             return next({
                 status: 422, 
                 message: `Narratives controller.update failed with ${e.message}`,
