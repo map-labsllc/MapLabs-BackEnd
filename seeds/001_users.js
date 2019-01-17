@@ -23,6 +23,10 @@ exports.seed = function(knex, Promise) {
           mod_complete: 0,
           created_at: new Date('2019-01-15 1:00:00 UTC')
         },
-      ]);
+      ])
+      .then(() => {
+				 // Moves id column (PK) auto-incremented to correct value after inserts
+				return knex.raw(`SELECT setval('users_user_id_seq', (SELECT MAX(user_id) FROM users))`)
+			})
     });
 };

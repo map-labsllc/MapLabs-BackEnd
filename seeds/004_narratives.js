@@ -25,6 +25,10 @@ exports.seed = function(knex, Promise) {
           user_id: 1,
           narrative: '2nd for user_id = 1, narrative_code = 2',
         },
-      ]);
+      ])
+      .then(() => {
+				 // Moves id column (PK) auto-incremented to correct value after inserts
+				return knex.raw(`SELECT setval('narratives_narrative_id_seq', (SELECT MAX(narrative_id) FROM narratives))`)
+			})
     });
 };

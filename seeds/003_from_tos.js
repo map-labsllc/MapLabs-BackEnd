@@ -29,6 +29,10 @@ exports.seed = function(knex, Promise) {
           from: '2nd from for user_id = 1, from_to_code = 2',
           to: '2nd to for user_id = 1, from_to_code = 2',
         },
-      ]);
+      ])
+      .then(() => {
+				 // Moves id column (PK) auto-incremented to correct value after inserts
+				return knex.raw(`SELECT setval('from_tos_from_to_id_seq', (SELECT MAX(from_to_id) FROM from_tos))`)
+			})
     });
 };
