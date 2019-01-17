@@ -64,6 +64,7 @@ router.get('/:login_service_id/:token', (req, res, next) => {
 *  @body token
 *  Return
 *    201 { user: { id, fname, ... } }
+*    500 "error: insert into \"users\" ...  duplicate key value violates unique constraint"
 http POST localhost:3000/users fname='Susan' lname='Smith' email='smith@gmail.com' login_service_id=1 token='EFD'
 ***************************************************** */
 router.post('/', (req, res, next) => {
