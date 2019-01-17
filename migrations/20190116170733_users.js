@@ -2,9 +2,9 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('users', function(table) {
     table.increments("user_id").primary()
-    table.string('fname', 255).notNullable()
-    table.string('lname', 255).notNullable()
-    table.string('email', 255).notNullable()
+    table.text('fname').notNullable()
+    table.text('lname').notNullable()
+    table.text('email').notNullable()
     table.unique('email')
     table.integer('login_service_id').notNullable().defaultTo(0)
     table.text('token').notNullable()
