@@ -6,7 +6,7 @@ exports.up = function(knex, Promise) {
     table.string('lname', 255).notNullable()
     table.string('email', 255).notNullable()
     table.unique('email')
-    table.integer('login_service').notNullable().defaultTo(0)
+    table.integer('login_service_id').notNullable().defaultTo(0)
     table.text('token').notNullable()
     table.integer('mod_complete').notNullable().defaultTo(0)
     table.dateTime('created_at').notNullable().defaultTo(knex.raw('now()'))
