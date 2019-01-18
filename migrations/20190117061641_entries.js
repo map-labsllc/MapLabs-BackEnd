@@ -4,9 +4,8 @@ exports.up = function(knex, Promise) {
     table.increments("entry_id").primary()
     table.integer('entry_code').notNullable()
     table.integer('user_id').notNullable()
-    table.string('entry', 255).notNullable()
-    
     table.foreign('user_id').references('users.user_id').onDelete('cascade')
+    table.text('entry').notNullable()
   })
 };
 
