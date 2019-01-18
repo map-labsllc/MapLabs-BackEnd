@@ -10,6 +10,7 @@ const logger = require('morgan')
 // pull in routers
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users/router')
+const answersRouter = require('./routes/answers/router')
 // const narrativesRouter = require('./routes/narratives/router')
 // boilerplate
 const app = express()
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', indexRouter)
 // app.use('/narratives', narrativesRouter)
 app.use('/users', usersRouter)
+// app.use('/answers', answersRouter)
 
 
 // ===========================================================
