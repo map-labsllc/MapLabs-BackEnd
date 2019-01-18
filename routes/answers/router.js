@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 const knex = require('../../knex');
 
+// Note:
+//   Code is the same as /routes/from_tos/router.js
+//   but accesses a different table
+
+
 /* **************************************************
 *  GET answers/:user_id
 *
 *  Get answers for all questions for user_id.
-*  user_id isn't validated, so this route always succeeds.
 *
 *  @param user_id
 *
@@ -63,7 +67,7 @@ router.get('/:user_id', (req, res, next) => {
 });
 
 /* **************************************************
-*  POST user/:user_id/:question_code
+*  POST answers/:user_id/:question_code
 *
 *  Add or replace all answers for a question_code for a user_id
 *  If there were previous answers for question_code / user_id they are deleted first
@@ -79,7 +83,7 @@ router.get('/:user_id', (req, res, next) => {
 http POST localhost:3000/answers/1/3 answers='["ans1","ans2"]'
 ***************************************************** */
 router.post('/:user_id/:question_code', (req, res, next) => {
-  console.log("POST users");
+  console.log("POST answers");
 
   const user_id = parseInt(req.params.user_id, 10)
   const question_code = parseInt(req.params.question_code, 10)
