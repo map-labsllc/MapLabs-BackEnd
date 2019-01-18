@@ -10,7 +10,7 @@ const logger = require('morgan')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users/router')
 const answersRouter = require('./routes/answers/router')
-const fromTosRouter = require('./routes/from_tos/router')
+const transitionsRouter = require('./routes/transitions/router')
 // const narrativesRouter = require('./routes/narratives/router')
 
 // boilerplate
@@ -26,7 +26,7 @@ app.use('/', indexRouter)
 // app.use('/narratives', narrativesRouter)
 app.use('/users', usersRouter)
 app.use('/answers', answersRouter)
-app.use('/from_tos', fromTosRouter)
+app.use('/transitions', transitionsRouter)
 
 
 // ===========================================================
