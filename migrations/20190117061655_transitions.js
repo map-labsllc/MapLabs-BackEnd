@@ -1,9 +1,9 @@
 
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('from_tos', function(table) {
-    table.increments("from_to_id").primary()
-    table.integer('question_code').notNullable()
+  return knex.schema.createTable('transitions', function(table) {
+    table.increments("transition_id").primary()
     table.integer('user_id').notNullable()
+    table.integer('question_code').notNullable()
     table.text('from').notNullable()
     table.text('to').notNullable()
 
@@ -12,5 +12,5 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTableIfExists('from_tos')
+  return knex.schema.dropTableIfExists('transitions')
 };

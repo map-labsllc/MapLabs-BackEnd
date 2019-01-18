@@ -8,9 +8,9 @@ const knex = require('../../knex');
 
 
 /* **************************************************
-*  GET from_tos/:user_id
+*  GET transitions/:user_id
 *
-*  Get all from_tos for user_id.
+*  Get all transitions for user_id.
 *
 *  @param user_id
 *
@@ -19,10 +19,10 @@ const knex = require('../../knex');
             4: [ { from: 'here', to: 'there'}, { … } ] }
     If there are no answers for user_id, return { }
 
-http GET localhost:3000/from_tos/1
+http GET localhost:3000/transitions/1
 ***************************************************** */
 router.get('/:user_id', (req, res, next) => {
-  console.log('GET from_tos/:user_id');
+  console.log('GET transitions/:user_id');
 
   // get passed params
   const user_id = parseInt(req.params.user_id, 10)
@@ -35,12 +35,12 @@ router.get('/:user_id', (req, res, next) => {
   }
 
   // lookup all form_tos for user
-  knex('from_tos')
+  knex('transitions')
     .where('user_id', user_id)
-    .orderBy(['question_code', 'from_to_id']) // group the questions and put in order they were added
+    .orderBy(['question_code', 'transition_id']) // group the questions and put in order they were added
     .returning('*')
     .then((fromTos) => {
-      console.log("GET -- from_tos: ", fromTos);
+      console.log("GET -- transitions: ", fromTos);
       const retVal = {}
       if (fromTos.length) {
         // build data structure to return
@@ -67,14 +67,14 @@ router.get('/:user_id', (req, res, next) => {
 });
 
 /* **************************************************
-*  POST from_tos/:user_id/:question_code
+*  POST transitions/:user_id/:question_code
 *
-*  Add or replace all from_tos for a question_code for a user_id
+*  Add or replace all transitions for a question_code for a user_id
 *  If there were previous records for question_code / user_id they are deleted first
 *
 *  @param user_id
 *  @param question_code
-*  @body from_tos: array of from_to objects:
+*  @body transitions: array of transition objects:
                    [ {"from": "here", "to": "there"},
                      {"from": "good", "to": "bad"},
                      ... ]
@@ -83,10 +83,10 @@ router.get('/:user_id', (req, res, next) => {
      201 { message: "success" }
      500
 
-http POST localhost:3000/from_tos/1/7 from_tos='[{"from": "here", "to": "there"}, {"from": "good", "to": "bad"}]'
+http POST localhost:3000/transitions/1/7 transitions='[{"from": "here", "to": "there"}, {"from": "good", "to": "bad"}]'
 ***************************************************** */
 router.post('/:user_id/:question_code', (req, res, next) => {
-  console.log("POST from_tos");
+  console.log("POST transitions");
 
   const user_id = parseInt(req.params.user_id, 10)
   const question_code = parseInt(req.params.question_code, 10)
@@ -104,21 +104,21 @@ router.post('/:user_id/:question_code', (req, res, next) => {
     console.log("ERROR", errMsg)
     throw new Error(errMsg)
   }
-  // -- from_tos
-  let { from_tos } = req.body
-  from_tos = JSON.parse(from_tos)
-  console.log('from_tos: ', from_tos);
+  // -- transitions
+  let { transitions } = req.body
+  transitions = JSON.parse(transitions)
+  console.log('transitions: ', transitions);
 
   // build array of answer records to be inserted into db
-  const fromToRecords = from_tos.map(from_to => ({
+  const fromToRecords = transitions.map(transition => ({
     question_code,
     user_id,
-    from: from_to.from,
-    to: from_to.to,
+    from: transition.from,
+    to: transition.to,
   }))
 
-  // delete any exisiting from_tos for this question_code and user_id
-  knex('from_tos')
+  // delete any exisiting transitions for this question_code and user_id
+  knex('transitions')
     .where({
       user_id,
       question_code,
@@ -127,7 +127,7 @@ router.post('/:user_id/:question_code', (req, res, next) => {
     .then(() => {
 
       // insert answer records
-      knex('from_tos')
+      knex('transitions')
         .insert(fromToRecords)
         .then(() => {
           res.status(201).json({"message": "success"});
