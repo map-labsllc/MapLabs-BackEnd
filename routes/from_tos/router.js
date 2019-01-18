@@ -4,15 +4,15 @@ const knex = require('../../knex');
 
 /* **************************************************
 *  GET .../:user_id
-*  Get all answers for user_id
+*  Get all from_tos for user_id
 *  params:
 *     user_id
-*  Return object keyed on question_code with value as array of answers
-     200: { 3: [ 'ans1, ans2', … ] ,
-            4: [ 'ans7, ans8', … ] }
+*  Return object keyed on question_code with value as array of from/to object
+     200: { 3: [ { from: 'bad!', to: 'good!'}, { … } ] ,
+            4: [ { from: 'here', to: 'there'}, { … } ] }
     If there are no answers for user_id, return { }
 
-http GET localhost:3000/answers/1
+http GET localhost:3000/from_tos/1
 ***************************************************** */
 router.get('/:user_id', (req, res, next) => {
   console.log('GET answers/:user_id');
@@ -26,25 +26,25 @@ router.get('/:user_id', (req, res, next) => {
   }
 
   // lookup all answers for user
-  knex('answers')
+  knex('from_tos')
     .where('user_id', user_id)
-    .orderBy(['question_code', 'answer_id']) // group the questions and put in order they were added
+    .orderBy(['from_to_code', 'from_to_id']) // group the questions and put in order they were added
     .returning('*')
-    .then((answers) => {
-      console.log("GET -- answers: ", answers);
+    .then((fromTos) => {
+      console.log("GET -- from_tos: ", fromTos);
       const retVal = {}
-      if (answers.length) {
-        let currQuestionCode = answers[0].question_code
-        let currAnswers = []
-        for (let i = 0; i < answers.length; i++) {
-          if (answers[i].question_code != currQuestionCode) {
-            retVal[currQuestionCode] = currAnswers
-            currQuestionCode = answers[i].question_code
-            currAnswers = []
+      if (fromTos.length) {
+        let currFromToCode = fromTos[0].from_to_code
+        let currFromTos = []
+        for (let i = 0; i < fromTos.length; i++) {
+          if (fromTos[i].from_to_code != currFromToCode) {
+            retVal[currFromToCode] = currFromTos
+            currFromToCode = fromTos[i].from_to_code
+            currFromTos = []
           }
-          currAnswers.push(answers[i].answer)
+          currFromTos.push({ from: fromTos[i].from, to: fromTos[i].to })
         }
-        retVal[currQuestionCode] = currAnswers
+        retVal[currFromToCode] = currFromTos
       }
       res.status(200).json(retVal)
     })
