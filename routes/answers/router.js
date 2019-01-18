@@ -116,8 +116,8 @@ router.post('/:user_id/:question_code', (req, res, next) => {
   // delete any exisiting answer for this question_code and user_id
   knex('answers')
     .where({
-      'user_id': user_id,
-      'question_code': question_code,
+      user_id,
+      question_code,
     })
     .del()
     .then(() => {
