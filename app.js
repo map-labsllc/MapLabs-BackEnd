@@ -10,7 +10,7 @@ const logger = require('morgan')
 // pull in routers
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users/router')
-const narrativesRouter = require('../routes/narratives/router')
+// const narrativesRouter = require('./routes/narratives/router')
 // boilerplate
 const app = express()
 app.use(logger('dev'))
@@ -21,10 +21,13 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // setup routes
 app.use('/', indexRouter)
-app.use('/narratives', narrativesRouter)
+// app.use('/narratives', narrativesRouter)
 app.use('/users', usersRouter)
 
+
+// ===========================================================
 // catch 404 and forward to error handler
+// ===========================================================
 app.use(function(req, res, next) {
   next(createError(404))
 })
