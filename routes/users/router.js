@@ -53,6 +53,57 @@ router.get('/:login_service_id/:token', (req, res, next) => {
     });
 });
 
+/* **************************************************
+*  PATCH /
+*  Update the module and section complete for user_id
+*  @body mod_current
+*  @body sec_current
+*  Return
+*    201 { user: { user_id, fname, ... } }
+*    500 "Error: PATCH body element in non-numeric
+*    500 "Error: PATCH route throw error can't find user_id 7"
+http PATCH localhost:3000/users/1 mod_complete=2 sec_complete=3
+***************************************************** */
+router.patch('/:user_id', (req, res, next) => {
+  console.log("PATCH users");
+
+  const { user_id } = req.params
+
+  // check params
+  const { mod_complete, sec_complete } = req.body
+  if (!mod_complete || !sec_complete) {
+    const errMsg = `Missing PATCH req.body element`
+    console.log("ERROR", errMsg)
+    throw new Error(errMsg)
+  }
+  const numeric_mod_complete = parseInt(mod_complete, 10)
+  const numeric_sec_complete = parseInt(sec_complete, 10)
+  if (isNaN(numeric_mod_complete) || isNaN(numeric_sec_complete)) {
+      const errMsg = `PATCH body element in non-numeric`
+      console.log("ERROR", errMsg)
+      throw new Error(errMsg)
+    }
+
+  // update record
+  const updateFields = { mod_complete, sec_complete }
+  knex('users')
+    .update(updateFields)
+    .where('user_id', user_id)
+    .returning('*')
+    .then((aRecs) => {
+      if (!aRecs.length) {
+        const errMsg = `PATCH route throw error can't find user_id: ${user_id}`
+        console.log(errMsg);
+        const error = new Error(errMsg);
+        throw error;
+      }
+      res.status(201).json({ user: aRecs[0] });
+      return;
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
 
 /* **************************************************
 *  POST /
@@ -77,9 +128,9 @@ router.post('/', (req, res, next) => {
     console.log("ERROR", errMsg)
     throw new Error(errMsg)
   }
-  const numeric_login_service_id = parseInt(login_service_id)
+  const numeric_login_service_id = parseInt(login_service_id, 10)
   if (isNaN(numeric_login_service_id) || !numeric_login_service_id) {
-      const errMsg = `Missing POST body element`
+      const errMsg = `Missing or non-numeris POST numeric_login_service_id`
       console.log("ERROR", errMsg)
       throw new Error(errMsg)
     }
