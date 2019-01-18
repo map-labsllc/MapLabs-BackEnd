@@ -15,7 +15,7 @@ const controller = require('./controller')
 *     If found, return user object
 *     If not found, return user = "null"
 *  Return
-     200: { user: { id, fname, ... } }
+     200: { id, fname, ... }
      404: "Error: unable to get user, login_service_id: 1, token: ABCD, was not found"
 
 http GET localhost:3000/users/1/ABC
@@ -36,16 +36,16 @@ router.get('/:login_service_id/:token', (req, res, next) => {
   knex('users')
     .where({ token, login_service_id })
     .returning('*')
-    .then((user) => {
-      console.log("GET -- user: ", user);
-      if (!user.length) {
+    .then((users) => {
+      console.log("GET -- user: ", users);
+      if (!users.length) {
         console.log(`--- users get ${req.params.id} -- rec not found`);
         const error = new Error(`unable to get user, login_service_id: ${login_service_id}, token: ${token}, was not found`);
         error.status = 404;
         throw error;
       }
-      console.log('success ', user[0]);
-      res.status(200).json({ user: user[0] })
+      console.log('success ', users[0]);
+      res.status(200).json(users[0])
     })
     .catch((error) => {
       console.log('caught error ', error);
@@ -59,7 +59,7 @@ router.get('/:login_service_id/:token', (req, res, next) => {
 *  @body mod_current
 *  @body sec_current
 *  Return
-*    201 { user: { user_id, fname, ... } }
+*    201 {{ user_id, fname, ... }
 *    500 "Error: PATCH body element in non-numeric
 *    500 "Error: PATCH route throw error can't find user_id 7"
 http PATCH localhost:3000/users/1 mod_complete=2 sec_complete=3
@@ -90,14 +90,14 @@ router.patch('/:user_id', (req, res, next) => {
     .update(updateFields)
     .where('user_id', user_id)
     .returning('*')
-    .then((aRecs) => {
-      if (!aRecs.length) {
+    .then((users) => {
+      if (!users.length) {
         const errMsg = `PATCH route throw error can't find user_id: ${user_id}`
         console.log(errMsg);
         const error = new Error(errMsg);
         throw error;
       }
-      res.status(201).json({ user: aRecs[0] });
+      res.status(201).json(users[0]);
       return;
     })
     .catch((error) => {
@@ -114,7 +114,7 @@ router.patch('/:user_id', (req, res, next) => {
 *  @body login_service_id
 *  @body token
 *  Return
-*    201 { user: { id, fname, ... } }
+*    201 { id, fname, ... }
 *    500 "error: insert into \"users\" ...  duplicate key value violates unique constraint"
 http POST localhost:3000/users fname='Susan' lname='Smith' email='smith@gmail.com' login_service_id=1 token='EFD'
 ***************************************************** */
@@ -145,8 +145,8 @@ router.post('/', (req, res, next) => {
   knex('users')
     .insert(newUser)
     .returning('*')
-    .then((data) => {
-      res.status(201).json({ user: data[0] });
+    .then((users) => {
+      res.status(201).json(users[0]);
     })
     .catch((error) => {
       next(error);
