@@ -106,8 +106,13 @@ router.post('/:user_id/:question_code', (req, res, next) => {
   }
   // -- transitions
   let { transitions } = req.body
-  transitions = JSON.parse(transitions)
   console.log('transitions: ', transitions);
+
+  // this typeof is required to be able to test function with HTTPie
+  // -- transitions will be a string when called from HTTPie
+  // -- transitions already parsed back to an array when called from front end with fetch()
+  if (typeof transitions === 'string')
+    transitions = JSON.parse(transitions)
 
   // build array of answer records to be inserted into db
   const fromToRecords = transitions.map(transition => ({

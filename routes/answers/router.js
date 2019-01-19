@@ -34,6 +34,8 @@ router.get('/:user_id', (req, res, next) => {
     throw new Error(errMsg)
   }
 
+  console.log("Getting answers for user_id: ", user_id);
+
   // lookup all answers for user_id
   knex('answers')
     .where('user_id', user_id)
@@ -83,6 +85,7 @@ router.get('/:user_id', (req, res, next) => {
 http POST localhost:3001/answers/1/3 answers='["ans1","ans2"]'
 ***************************************************** */
 router.post('/:user_id/:question_code', (req, res, next) => {
+  console.log(" ");
   console.log("POST answers");
 
   const user_id = parseInt(req.params.user_id, 10)
@@ -103,8 +106,13 @@ router.post('/:user_id/:question_code', (req, res, next) => {
   }
   // -- answers
   let { answers } = req.body
-  answers = JSON.parse(answers)
   console.log('answers: ', answers);
+
+  // this typeof is required to be able to test function with HTTPie
+  // -- answers will be a string when called from HTTPie
+  // -- asnwers already parsed back to an array when called from front end with fetch()
+  if (typeof answers === 'string')
+    answers = JSON.parse(answers)
 
   // build array of answer records to be inserted into db
   const answerRecords = answers.map(answer => ({
@@ -137,7 +145,7 @@ router.post('/:user_id/:question_code', (req, res, next) => {
       console.log("ERROR: ", error);
       next(error);
     });
-
+  console.log(" ");
 });
 
 module.exports = router;
