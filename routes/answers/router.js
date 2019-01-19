@@ -19,7 +19,7 @@ const knex = require('../../knex');
            4: [ 'ans7, ans8', … ] }
       If there are no answers for user_id, return { }
 
-http GET localhost:3000/answers/1
+http GET localhost:3001/answers/1
 ***************************************************** */
 router.get('/:user_id', (req, res, next) => {
   console.log('GET answers/:user_id');
@@ -80,7 +80,7 @@ router.get('/:user_id', (req, res, next) => {
      201 { message: "success" }
      500
 
-http POST localhost:3000/answers/1/3 answers='["ans1","ans2"]'
+http POST localhost:3001/answers/1/3 answers='["ans1","ans2"]'
 ***************************************************** */
 router.post('/:user_id/:question_code', (req, res, next) => {
   console.log("POST answers");
