@@ -1,5 +1,7 @@
 
 
+
+
 const createError = require('http-errors')
 const express = require('express')
 const path = require('path')
@@ -11,7 +13,8 @@ const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users/router')
 const answersRouter = require('./routes/answers/router')
 const transitionsRouter = require('./routes/transitions/router')
-// const narrativesRouter = require('./routes/narratives/router')
+const lifedescrsRouter = require('./routes/lifedescrs/router')
+
 
 // boilerplate
 const app = express()
@@ -21,12 +24,22 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
+// prevent CORS error
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
+  next()
+})
+
+
 // setup routes
 app.use('/', indexRouter)
 // app.use('/narratives', narrativesRouter)
 app.use('/users', usersRouter)
 app.use('/answers', answersRouter)
 app.use('/transitions', transitionsRouter)
+app.use('/lifedescrs', lifedescrsRouter)
 
 
 // ===========================================================

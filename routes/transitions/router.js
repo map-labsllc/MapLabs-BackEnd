@@ -19,7 +19,7 @@ const knex = require('../../knex');
             4: [ { from: 'here', to: 'there'}, { … } ] }
     If there are no answers for user_id, return { }
 
-http GET localhost:3000/transitions/1
+http GET localhost:3001/transitions/1
 ***************************************************** */
 router.get('/:user_id', (req, res, next) => {
   console.log('GET transitions/:user_id');
@@ -83,7 +83,7 @@ router.get('/:user_id', (req, res, next) => {
      201 { message: "success" }
      500
 
-http POST localhost:3000/transitions/1/7 transitions='[{"from": "here", "to": "there"}, {"from": "good", "to": "bad"}]'
+http POST localhost:3001/transitions/1/7 transitions='[{"from": "here", "to": "there"}, {"from": "good", "to": "bad"}]'
 ***************************************************** */
 router.post('/:user_id/:question_code', (req, res, next) => {
   console.log("POST transitions");

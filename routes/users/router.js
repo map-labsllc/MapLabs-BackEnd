@@ -9,7 +9,6 @@ const knex = require('../../knex');
 *     If found, return user object
 *     If not found, return 404
 *
-
 *   @param login_service_id: enumerated value for login service providing the token, Firebase = 1
 *   @param token: the token from the login service used to create the user's record
 *
@@ -17,7 +16,7 @@ const knex = require('../../knex');
      200: { id, fname, ... }
      404: "Error: unable to get user, login_service_id: 1, token: ABCD, was not found"
 
-http GET localhost:3000/users/1/ABC
+http GET localhost:3001/users/1/ABC
 ***************************************************** */
 router.get('/:login_service_id/:token', (req, res, next) => {
   console.log('GET users/:login_service_id/:token');
@@ -70,7 +69,7 @@ router.get('/:login_service_id/:token', (req, res, next) => {
      500 "Error: PATCH body element in non-numeric"
      500 "Error: PATCH route throw error can't find user_id 7"
 
-http PATCH localhost:3000/users/1 mod_complete=2 sec_complete=3
+http PATCH localhost:3001/users/1 mod_complete=2 sec_complete=3
 ***************************************************** */
 router.patch('/:user_id', (req, res, next) => {
   console.log("PATCH users");
@@ -132,7 +131,7 @@ router.patch('/:user_id', (req, res, next) => {
      201 { id, fname, ... }
      500 "error: insert into \"users\" ...  duplicate key value violates unique constraint"
 
-http POST localhost:3000/users fname='Susan' lname='Smith' email='smith@gmail.com' login_service_id=1 token='EFD'
+http POST localhost:3001/users fname='Susan' lname='Smith' email='smith@gmail.com' login_service_id=1 token='EFD'
 ***************************************************** */
 router.post('/', (req, res, next) => {
   console.log("POST users");
