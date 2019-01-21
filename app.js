@@ -18,11 +18,6 @@ const lifedescrsRouter = require('./routes/lifedescrs/router')
 
 // boilerplate
 const app = express()
-app.use(logger('dev'))
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))
 
 // prevent CORS error
 app.use(function (req, res, next) {
@@ -32,15 +27,20 @@ app.use(function (req, res, next) {
   next()
 })
 
+// boilerplate
+app.use(logger('dev'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'public')))
+
 
 // setup routes
 app.use('/', indexRouter)
-// app.use('/narratives', narrativesRouter)
 app.use('/users', usersRouter)
 app.use('/answers', answersRouter)
 app.use('/transitions', transitionsRouter)
 app.use('/lifedescrs', lifedescrsRouter)
-
 
 // ===========================================================
 // catch 404 and forward to error handler
