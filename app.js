@@ -13,7 +13,7 @@ const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users/router')
 const answersRouter = require('./routes/answers/router')
 const transitionsRouter = require('./routes/transitions/router')
-const lifedescrsRouter = require('./routes/lifedescrs/router')
+const lifeDescriptionsRouter = require('./routes/lifeDescriptions/router')
 
 
 // boilerplate
@@ -40,7 +40,7 @@ app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/answers', answersRouter)
 app.use('/transitions', transitionsRouter)
-app.use('/lifedescrs', lifedescrsRouter)
+app.use('/lifeDescriptions', lifeDescriptionsRouter)
 
 // ===========================================================
 // catch 404 and forward to error handler
