@@ -58,42 +58,42 @@ router.get('/:login_service_id/:token', (req, res, next) => {
 /* **************************************************
 *  PATCH /users/:user_id
 *
-*  Update mod_complete and sec_complete fields for user_id
+*  Update curr_module and curr_section fields for user_id
 *
 *  @param user_id
-*  @body mod_complete: what module has been completed, 0 for no module completed
-*  @body sec_complete: what section has been completed in module, 0 for no section completed
+*  @body curr_module: what is the user's current module, 1-based
+*  @body curr_section: what is the user's current in the curr_module, 1-based
 *
 *  Return
      201 { user_id, fname, ... }
      500 "Error: PATCH body element in non-numeric"
      500 "Error: PATCH route throw error can't find user_id 7"
 
-http PATCH localhost:3001/users/1 mod_complete=2 sec_complete=3
+http PATCH localhost:3001/users/1 curr_module=2 curr_section=1
 ***************************************************** */
 router.patch('/:user_id', (req, res, next) => {
   console.log("PATCH users");
 
   // get passed params and body
   const { user_id } = req.params
-  const { mod_complete, sec_complete } = req.body
+  const { curr_module, curr_section } = req.body
 
   // validate params
-  if (!mod_complete || !sec_complete) {
+  if (!curr_module || !curr_section) {
     const errMsg = `Missing PATCH req.body element`
     console.log("ERROR", errMsg)
     throw new Error(errMsg)
   }
-  const numeric_mod_complete = parseInt(mod_complete, 10)
-  const numeric_sec_complete = parseInt(sec_complete, 10)
-  if (isNaN(numeric_mod_complete) || isNaN(numeric_sec_complete)) {
+  const numeric_curr_module = parseInt(curr_module, 10)
+  const numeric_curr_section = parseInt(curr_section, 10)
+  if (isNaN(numeric_curr_module) || isNaN(numeric_curr_section)) {
       const errMsg = `PATCH body element in non-numeric`
       console.log("ERROR", errMsg)
       throw new Error(errMsg)
     }
 
   // update record
-  const updateFields = { mod_complete, sec_complete }
+  const updateFields = { curr_module, curr_section }
   knex('users')
     .update(updateFields)
     .where('user_id', user_id)
