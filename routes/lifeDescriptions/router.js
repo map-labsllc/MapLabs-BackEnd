@@ -3,15 +3,15 @@ const router = express.Router();
 const knex = require('../../knex');
 const fs = require('fs');
 
-const FILE_NAME = './public/lifedescrs.json'
+const FILE_NAME = './public/lifeDescriptions.json'
 
 
 /* **************************************************
-*  GET lifedescrs
+*  GET lifeDescriptions
 *
 *  Get array of Life Descriptors
 *  Alternatives, this file is in /public so the file can be
-*    loaded directly "http GET localhost:3001/lifedescrs.json"
+*    loaded directly "http GET localhost:3001/lifeDescriptions.json"
 *
 *  Return
     200:
@@ -29,10 +29,10 @@ const FILE_NAME = './public/lifedescrs.json'
         ...
        ]
 
-http GET localhost:3001/lifedescrs
+http GET localhost:3001/lifeDescriptions
 ***************************************************** */
 router.get('', (req, res, next) => {
-  console.log('GET lifedescrs');
+  console.log('GET lifeDescriptions');
 
   var fs = require('fs');
   var obj;
