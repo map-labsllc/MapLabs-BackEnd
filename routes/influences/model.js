@@ -1,22 +1,22 @@
 const knex = require('../../knex')
 
 module.exports = {
-    create: async function({user_id, question_code, transition}) {
-        const existing = await knex('transitions').where({user_id, question_code})
+    create: async function({user_id, question_code, influence}) {
+        const existing = await knex('influences').where({user_id, question_code})
         if (existing) {
-            return knex('transitions')
+            return knex('influences')
             .where({user_id, question_code})
             .del()
             .then(() => {
-                return knex('transitions')
-                .insert({user_id, question_code, transition})
+                return knex('influences')
+                .insert({user_id, question_code, influence})
             })
         } 
-        return knex('transitions')
-        .insert({user_id, question_code, transition})
+        return knex('influences')
+        .insert({user_id, question_code, influence})
     },
     getOne: function({user_id, question_code}) {
-        return knex('transitions')
+        return knex('influences')
         .where({user_id, question_code})
     }
 }
