@@ -1,7 +1,7 @@
 const knex = require('../../knex')
 
 module.exports = {
-    create: async function(user_id, question_code, influence) {
+    create: function(user_id, question_code, influence) {
         return knex('influences')
         .insert({user_id, question_code, influence})
     },
