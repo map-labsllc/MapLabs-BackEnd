@@ -73,17 +73,18 @@ http PATCH localhost:3001/users/1 curr_module=2 curr_section=1
 ***************************************************** */
 router.patch('/:user_id', (req, res, next) => {
   console.log("PATCH users");
+  console.log("req.body: ", req.body);
 
   // get passed params and body
   const { user_id } = req.params
   const { curr_module, curr_section } = req.body
 
   // validate params
-  if (!curr_module || !curr_section) {
-    const errMsg = `Missing PATCH req.body element`
-    console.log("ERROR", errMsg)
-    throw new Error(errMsg)
-  }
+  // if (!curr_module || !curr_section) {
+  //   const errMsg = `Missing PATCH req.body element`
+  //   console.log("ERROR", errMsg)
+  //   throw new Error(errMsg)
+  // }
   const numeric_curr_module = parseInt(curr_module, 10)
   const numeric_curr_section = parseInt(curr_section, 10)
   if (isNaN(numeric_curr_module) || isNaN(numeric_curr_section)) {
