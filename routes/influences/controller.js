@@ -13,10 +13,20 @@ module.exports = {
         const [validatedUserId, validatedInfluenceCode, validatedInfluence] = validateInfluence(req.params.user_id, req.params.question_code, {name: req.body.name, belief: req.body.belief, category: req.body.category})
         if (!validatedUserId) return next(new Error('Influence failed validation'))
 
-        return model.create(validatedUserId, validatedInfluenceCode, validatedInfluence).then(influence => res.status(201).json(influence)).catch(e => next({status: 422, message: e.message}))
+        return model.create(validatedUserId, validatedInfluenceCode, validatedInfluence)
+        .then(influence => {
+            res.status = 201
+            return res.json(influence)
+        })
+        .catch(e => next({status: 422, message: e.message}))
     },
     
     getOne: function(req, res, next) {
-        return model.getOne(req.params.user_id, req.params.question_code).then(influence => res.status(204).json(influence)).catch(e => next({status: 422, message: e.message}))
+        return model.getOne(req.params.user_id, req.params.question_code)
+        .then(influence => {
+            res.status = 204
+            return res.json(influence)
+        })
+        .catch(e => next({status: 422, message: e.message}))
     }
 }
