@@ -7,8 +7,6 @@ exports.up = function(knex, Promise) {
         table.text('name').notNullable()
         table.text('belief').notNullable()
         table.text('category').notNullable()
-        table.boolean('supportive')
-        table.boolean('inhibiting')
     
         table.foreign('user_id').references('users.user_id').onDelete('cascade')
       })

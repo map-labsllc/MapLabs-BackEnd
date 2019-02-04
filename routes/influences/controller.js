@@ -4,7 +4,8 @@ function validateInfluence(user_id, question_code, { name, belief, category }) {
     if (Number.isNaN(+user_id)) return [false] 
     if (Number.isNaN(+question_code)) return [false] 
     if (typeof name !== 'string' || typeof belief !== 'string' || typeof category !== 'string') return [false] 
-
+    if (category.toLowerCase() !== 'supportive' || category.toLowerCase() !== 'inhibiting') return [false]
+    
     return [+user_id, +question_code, {name, belief, category}]
 
 }
