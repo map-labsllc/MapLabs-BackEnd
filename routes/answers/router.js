@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const knex = require('../../knex');
-
+const { checkUserPermissions } = require('../authMiddleware')
 // Note:
 //   Code is the same as /routes/from_tos/router.js
 //   but accesses a different table
@@ -21,7 +21,7 @@ const knex = require('../../knex');
 
 http GET localhost:3001/answers/1
 ***************************************************** */
-router.get('/:user_id', (req, res, next) => {
+router.get('/:user_id', checkUserPermissions, (req, res, next) => {
   console.log('GET answers/:user_id');
 
   // get passed params
@@ -84,7 +84,7 @@ router.get('/:user_id', (req, res, next) => {
 
 http POST localhost:3001/answers/1/3 answers='["ans1","ans2"]'
 ***************************************************** */
-router.post('/:user_id/:question_code', (req, res, next) => {
+router.post('/:user_id/:question_code', checkUserPermissions, (req, res, next) => {
   console.log(" ");
   console.log("POST answers");
 
