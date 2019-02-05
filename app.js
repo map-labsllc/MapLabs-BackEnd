@@ -14,6 +14,7 @@ const usersRouter = require('./routes/users/router')
 const answersRouter = require('./routes/answers/router')
 const transitionsRouter = require('./routes/transitions/router')
 const lifeDescriptionsRouter = require('./routes/lifeDescriptions/router')
+const influencesRouter = require('./routes/influences/router')
 
 
 // boilerplate
@@ -27,7 +28,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-// boilerplate
+// boilerplateilifeDescriptions
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -41,6 +42,7 @@ app.use('/users', usersRouter)
 app.use('/answers', answersRouter)
 app.use('/transitions', transitionsRouter)
 app.use('/lifeDescriptions', lifeDescriptionsRouter)
+app.use('/influences', influencesRouter)
 
 // ===========================================================
 // catch 404 and forward to error handler
