@@ -80,11 +80,11 @@ router.patch('/:user_id', (req, res, next) => {
   const { curr_module, curr_section } = req.body
 
   // validate params
-  // if (!curr_module || !curr_section) {
-  //   const errMsg = `Missing PATCH req.body element`
-  //   console.log("ERROR", errMsg)
-  //   throw new Error(errMsg)
-  // }
+  if (!curr_module || isNaN(curr_section)) {
+    const errMsg = `Missing PATCH req.body element`
+    console.log("ERROR", errMsg)
+    throw new Error(errMsg)
+  }
   const numeric_curr_module = parseInt(curr_module, 10)
   const numeric_curr_section = parseInt(curr_section, 10)
   if (isNaN(numeric_curr_module) || isNaN(numeric_curr_section)) {
