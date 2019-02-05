@@ -4,16 +4,6 @@ const knex = require('../../knex');
 const admin = require('firebase-admin')
 const { checkUserPermissions } = require('../authMiddleware')
 
-//see https://firebase.google.com/docs/admin/setup
-//set up firebase admin to check jwts
-admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY
-  }),
-  databaseURL: process.env.FIREBASE_DB_URL
-})
 
 /* **************************************************
 *  GET /users/:login_service_id/:login_token
@@ -158,7 +148,7 @@ router.post('/', (req, res, next) => {
 
   // validate params
   if (!fname || !lname || !jwt) {
-    const errMsg = `Missing POST body element`
+    const errMsg = `Missing POST body element ${fname} ${lname} ${jwt}`
     console.log("ERROR", errMsg)
     return next (new Error(errMsg))
   }
