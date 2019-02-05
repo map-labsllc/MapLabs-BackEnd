@@ -45,5 +45,9 @@ module.exports = {
           next(error);
         });
       })
+      .catch((error) => {
+        console.log('caught error ', error);
+        next(error);
+      })
     }
 }

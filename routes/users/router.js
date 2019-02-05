@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const knex = require('../../knex');
 const admin = require('firebase-admin')
+const { checkUserPermissions } = require('../authMiddleware')
 
 //see https://firebase.google.com/docs/admin/setup
 //set up firebase admin to check jwts
@@ -64,6 +65,10 @@ router.get('/', (req, res, next) => {
       next(error);
     });
   })
+  .catch((error) => {
+    console.log('caught error ', error);
+    next(error);
+  })
   // lookup user 
 });
 
@@ -83,7 +88,7 @@ router.get('/', (req, res, next) => {
 
 http PATCH localhost:3001/users/1 curr_module=2 curr_section=1
 ***************************************************** */
-router.patch('/:user_id', (req, res, next) => {
+router.patch('/:user_id', checkUserPermissions, (req, res, next) => {
   console.log("PATCH users");
   console.log("req.body: ", req.body);
 
@@ -172,6 +177,10 @@ router.post('/', (req, res, next) => {
           console.log('caught error ', error);
           next(error);
         });
+    })
+    .catch((error) => {
+      console.log('caught error ', error);
+      next(error);
     })
 });
 
