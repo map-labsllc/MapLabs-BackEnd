@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const knex = require('../../knex');
+const { checkUserPermissions } = require('../authMiddleware')
 
 // Note:
 //   Code is the same as /routes/answers/router.js
@@ -21,7 +22,7 @@ const knex = require('../../knex');
 
 http GET localhost:3001/transitions/1
 ***************************************************** */
-router.get('/:user_id', (req, res, next) => {
+router.get('/:user_id', checkUserPermissions, (req, res, next) => {
   console.log('GET transitions/:user_id');
 
   // get passed params
@@ -85,7 +86,7 @@ router.get('/:user_id', (req, res, next) => {
 
 http POST localhost:3001/transitions/1/7 transitions='[{"from": "here", "to": "there"}, {"from": "good", "to": "bad"}]'
 ***************************************************** */
-router.post('/:user_id/:question_code', (req, res, next) => {
+router.post('/:user_id/:question_code', checkUserPermissions, (req, res, next) => {
   console.log("POST transitions");
 
   const user_id = parseInt(req.params.user_id, 10)

@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const knex = require('../../knex');
+const admin = require('firebase-admin')
+const { checkUserPermissions } = require('../authMiddleware')
+
 
 /* **************************************************
 *  GET /users/:login_service_id/:login_token
@@ -18,23 +21,21 @@ const knex = require('../../knex');
 
 http GET localhost:3001/users/1/ABC
 ***************************************************** */
-router.get('/:login_service_id/:login_token', (req, res, next) => {
+router.get('/', (req, res, next) => {
   console.log('GET users/:login_service_id/:login_token');
-
-  // get passed params
-  const { login_token } = req.params
-  const login_service_id = parseInt(req.params.login_service_id, 10)
-
-  // validate params
-  if (isNaN(login_service_id) || !login_service_id) {
-    const errMsg = `Bad login_service_id param to GET /users service: ${req.params.login_service_id}`
-    console.log("ERROR", errMsg)
-    throw new Error(errMsg)
+  const jwt = req.cookies.jwt
+  console.log('cookies', req.cookies)
+  if (!jwt) {
+    const error = new Error('Unauthorized')
+    error.status = 422 
+    return next(error)
   }
-
-  // lookup user
-  knex('users')
-    .where({ login_token, login_service_id })
+  
+  return admin.auth().verifyIdToken(jwt).then(decodedJwt => {
+    const { email, user_id } = decodedJwt
+    // add record
+    knex('users')
+    .where({ email, login_token: user_id })
     .returning('*')
     .then((users) => {
       console.log("GET -- user: ", users);
@@ -43,7 +44,7 @@ router.get('/:login_service_id/:login_token', (req, res, next) => {
         console.log(`--- users get ${req.params.id} -- rec not found`);
         const error = new Error(`unable to get user, login_service_id: ${login_service_id}, login_token: ${login_token}, was not found`);
         error.status = 404;
-        throw error;
+        return next(error);
       }
       // user found
       console.log('success ', users[0]);
@@ -53,6 +54,12 @@ router.get('/:login_service_id/:login_token', (req, res, next) => {
       console.log('caught error ', error);
       next(error);
     });
+  })
+  .catch((error) => {
+    console.log('caught error ', error);
+    next(error);
+  })
+  // lookup user 
 });
 
 /* **************************************************
@@ -71,7 +78,7 @@ router.get('/:login_service_id/:login_token', (req, res, next) => {
 
 http PATCH localhost:3001/users/1 curr_module=2 curr_section=1
 ***************************************************** */
-router.patch('/:user_id', (req, res, next) => {
+router.patch('/:user_id', checkUserPermissions, (req, res, next) => {
   console.log("PATCH users");
   console.log("req.body: ", req.body);
 
@@ -125,8 +132,7 @@ router.patch('/:user_id', (req, res, next) => {
 *  @body fname
 *  @body lname
 *  @body email
-*  @body login_service_id
-*  @body login_token
+*  @body jwt
 *
 *  Return
      201 { id, fname, ... }
@@ -138,33 +144,34 @@ router.post('/', (req, res, next) => {
   console.log("POST users");
 
   // get passed params and body
-  const { fname, lname, email, login_service_id, login_token } = req.body
-  const numeric_login_service_id = parseInt(login_service_id, 10)
+  const { fname, lname, jwt } = req.body
 
   // validate params
-  if (!fname || !lname || !email || !login_service_id || !login_token) {
-    const errMsg = `Missing POST body element`
+  if (!fname || !lname || !jwt) {
+    const errMsg = `Missing POST body element ${fname} ${lname} ${jwt}`
     console.log("ERROR", errMsg)
-    throw new Error(errMsg)
+    return next (new Error(errMsg))
   }
-  if (isNaN(numeric_login_service_id) || !numeric_login_service_id) {
-      const errMsg = `Missing or non-numeris POST numeric_login_service_id`
-      console.log("ERROR", errMsg)
-      throw new Error(errMsg)
-    }
 
-  // add record
-  const newUser = { fname, lname, email, login_service_id, login_token }
-  knex('users')
-    .insert(newUser)
-    .returning('*')
-    .then((users) => {
-      res.status(201).json(users[0]);
+  return admin.auth().verifyIdToken(jwt).then(decodedJwt => {
+    const { email, user_id } = decodedJwt
+    const newUser = { fname, lname, email, login_token: user_id }
+    // add record
+    knex('users')
+        .insert(newUser)
+        .returning('*')
+        .then((users) => {
+          res.status(201).json(users[0]);
+        })
+        .catch((error) => {
+          console.log('caught error ', error);
+          next(error);
+        });
     })
     .catch((error) => {
       console.log('caught error ', error);
       next(error);
-    });
+    })
 });
 
 module.exports = router;
