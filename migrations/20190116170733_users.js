@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
     table.integer('login_service_id').notNullable().defaultTo(0) //auth provider
     table.text('login_token').notNullable() //user id from firebase
     table.integer('curr_module').notNullable().defaultTo(1)
-    table.integer('curr_section').notNullable().defaultTo(1)
+    table.integer('curr_section').notNullable().defaultTo(0)
     table.dateTime('created_at').notNullable().defaultTo(knex.raw('now()'))
 
     table.unique(['login_service_id', 'login_token'])
