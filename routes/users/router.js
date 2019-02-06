@@ -131,20 +131,21 @@ router.patch('/:user_id', checkUserPermissions, (req, res, next) => {
 *
 *  @body fname
 *  @body lname
-*  @body email
-*  @body jwt
+*  @headers Authorization: {jwt}
 *
 *  Return
      201 { id, fname, ... }
      500 "error: insert into \"users\" ...  duplicate key value violates unique constraint"
 
-http POST localhost:3001/users fname='Susan' lname='Smith' email='smith@gmail.com' login_service_id=1 login_token='EFD'
+http POST localhost:3001/users fname='Susan' lname='Smith' email='smith@gmail.com' jwt=FIREBASE JWT
 ***************************************************** */
 router.post('/', (req, res, next) => {
   console.log("POST users");
 
   // get passed params and body
-  const { fname, lname, jwt } = req.body
+  const { fname, lname } = req.body
+  const jwt = req.get('Authorization').replace('Token:', '').trim()
+
 
   // validate params
   if (!fname || !lname || !jwt) {
