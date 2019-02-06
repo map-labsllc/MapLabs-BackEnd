@@ -1,4 +1,5 @@
 const admin = require('firebase-admin')
+const knex = require('../knex')
 
 module.exports = {
     checkUserPermissions: function(req, res, next) {
