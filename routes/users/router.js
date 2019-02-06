@@ -23,8 +23,8 @@ http GET localhost:3001/users/1/ABC
 ***************************************************** */
 router.get('/', (req, res, next) => {
   console.log('GET users/:login_service_id/:login_token');
-  const jwt = req.cookies.jwt
-  console.log('cookies', req.cookies)
+  const jwt = req.get('Authorization').replace('Token:', '')
+  console.log('headers', req.headers)
   if (!jwt) {
     const error = new Error('Unauthorized')
     error.status = 422 

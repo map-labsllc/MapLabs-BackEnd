@@ -3,7 +3,7 @@ const knex = require('../knex')
 
 module.exports = {
     checkUserPermissions: function(req, res, next) {
-    const jwt = req.cookies.jwt 
+    const jwt = req.get('Authorization').replace('Token:', '')
     const mapMakerUserId = req.params.user_id
     
     if (!jwt || !mapMakerUserId) {
