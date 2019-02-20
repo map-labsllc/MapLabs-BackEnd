@@ -6,20 +6,17 @@ const { checkUserPermissions } = require('../authMiddleware')
 
 
 /* **************************************************
-*  GET /users/:login_service_id/:login_token
+*  GET /users/
 *
 *  Get a specific user record based on the auth information
 *     If found, return user object
-*     If not found, return 404
+*     If not found, return 422
 *
-*   @param login_service_id: enumerated value for login service providing the login_token, Firebase = 1
-*   @param login_token: the login_token from the login service used to create the user's record
-*
-*  Return
-     200: { id, fname, ... }
-     404: "Error: unable to get user, login_service_id: 1, login_token: ABCD, was not found"
-
-http GET localhost:3001/users/1/ABC
+*  @headers Authorization: {jwt}
+*  @return
+     200: { id, fname, ... } - if jwt and user found
+     422: "Unauthorized" - if no jwt
+     404: "unable to get user, login_service_id: ${login_service_id}, login_token: ${login_token}, was not found" if no user found
 ***************************************************** */
 router.get('/', (req, res, next) => {
   console.log('GET users/:login_service_id/:login_token');
@@ -72,7 +69,7 @@ router.get('/', (req, res, next) => {
 *  @body curr_section: what is the user's current in the curr_module, 1-based
 *
 *  Return
-     201 { user_id, fname, ... }
+     201 { <user> }
      500 "Error: PATCH body element in non-numeric"
      500 "Error: PATCH route throw error can't find user_id 7"
 
@@ -133,9 +130,10 @@ router.patch('/:user_id', checkUserPermissions, (req, res, next) => {
 *  @body lname
 *  @headers Authorization: {jwt}
 *
-*  Return
-     201 { id, fname, ... }
-     500 "error: insert into \"users\" ...  duplicate key value violates unique constraint"
+*  @return
+     201 { <user> } - if user found 
+     500 "Missing POST body element ${fname} ${lname} ${jwt}" - if no fname, lname, or jwt
+     500 "error: <db error>" -if db error
 
 http POST localhost:3001/users fname='Susan' lname='Smith' email='smith@gmail.com' jwt=FIREBASE JWT
 ***************************************************** */
