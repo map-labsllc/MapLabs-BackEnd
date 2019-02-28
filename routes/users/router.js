@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const knex = require('../../knex');
 const admin = require('firebase-admin')
+const knex = require('../../knex');
 const { checkUserPermissions } = require('../authMiddleware')
 
 
 /* **************************************************
 *  GET /users/
 *
-*  Get a specific user record based on the auth information
+*  Get a specific user record based on the auth information.
+*  Called from login.
 *     If found, return user object
 *     If not found, return 422
 *
@@ -16,7 +17,24 @@ const { checkUserPermissions } = require('../authMiddleware')
 *  @return
      200: { id, fname, ... } - if jwt and user found
      422: "Unauthorized" - if no jwt
-     404: "unable to get user, login_service_id: ${login_service_id}, login_token: ${login_token}, was not found" if no user found
+     404: "unable to get user, login_service_id: ${login_service_id},
+           login_token: ${login_token}, was not found" if no user found
+
+http GET localhost:3001/users/1/ABC_TOKEN_FROM_FIREBASE
+
+
+
+
+
+
+TO fix
+======
+login_service_id is not  pulled out of the URL before being used
+
+
+
+
+
 ***************************************************** */
 router.get('/', (req, res, next) => {
   console.log('GET users/:login_service_id/:login_token');
@@ -24,39 +42,39 @@ router.get('/', (req, res, next) => {
   console.log('headers', req.headers)
   if (!jwt) {
     const error = new Error('Unauthorized')
-    error.status = 422 
+    error.status = 422
     return next(error)
   }
-  
-  return admin.auth().verifyIdToken(jwt).then(decodedJwt => {
+
+  return admin.auth().verifyIdToken(jwt).then((decodedJwt) => {
     const { email, user_id } = decodedJwt
     // add record
     knex('users')
-    .where({ email, login_token: user_id })
-    .returning('*')
-    .then((users) => {
-      console.log("GET -- user: ", users);
-      // user not found
-      if (!users.length) {
-        console.log(`--- users get ${req.params.id} -- rec not found`);
-        const error = new Error(`unable to get user, login_service_id: ${login_service_id}, login_token: ${login_token}, was not found`);
-        error.status = 404;
-        return next(error);
-      }
-      // user found
-      console.log('success ', users[0]);
-      res.status(200).json(users[0])
-    })
-    .catch((error) => {
-      console.log('caught error ', error);
-      next(error);
-    });
+      .where({ email, login_token: user_id })
+      .returning('*')
+      .then((users) => {
+        console.log("GET -- user: ", users);
+        // user not found
+        if (!users.length) {
+          console.log(`--- users get ${req.params.id} -- rec not found`);
+          const error = new Error(`unable to get user, login_service_id: ${login_service_id}, login_token: ${login_token}, was not found`);
+          error.status = 404;
+          return next(error);
+        }
+        // user found
+        console.log('success ', users[0]);
+        res.status(200).json(users[0])
+      })
+      .catch((error) => {
+        console.log('caught error ', error);
+        next(error);
+      });
   })
   .catch((error) => {
     console.log('caught error ', error);
     next(error);
   })
-  // lookup user 
+  // lookup user
 });
 
 /* **************************************************
@@ -69,7 +87,7 @@ router.get('/', (req, res, next) => {
 *  @body curr_section: what is the user's current in the curr_module, 1-based
 *
 *  Return
-     201 { <user> }
+     201 { id, fname, ... }
      500 "Error: PATCH body element in non-numeric"
      500 "Error: PATCH route throw error can't find user_id 7"
 
@@ -131,7 +149,7 @@ router.patch('/:user_id', checkUserPermissions, (req, res, next) => {
 *  @headers Authorization: {jwt}
 *
 *  @return
-     201 { <user> } - if user found 
+     201 { id, fname, ... } - if user found
      500 "Missing POST body element ${fname} ${lname} ${jwt}" - if no fname, lname, or jwt
      500 "error: <db error>" -if db error
 
@@ -152,21 +170,21 @@ router.post('/', (req, res, next) => {
     return next (new Error(errMsg))
   }
 
-  return admin.auth().verifyIdToken(jwt).then(decodedJwt => {
+  return admin.auth().verifyIdToken(jwt).then((decodedJwt) => {
     const { email, user_id } = decodedJwt
     const newUser = { fname, lname, email, login_token: user_id }
     // add record
     knex('users')
-        .insert(newUser)
-        .returning('*')
-        .then((users) => {
-          res.status(201).json(users[0]);
-        })
-        .catch((error) => {
-          console.log('caught error ', error);
-          next(error);
-        });
-    })
+      .insert(newUser)
+      .returning('*')
+      .then((users) => {
+        res.status(201).json(users[0]);
+      })
+      .catch((error) => {
+        console.log('caught error ', error);
+        next(error);
+      });
+  })
     .catch((error) => {
       console.log('caught error ', error);
       next(error);
