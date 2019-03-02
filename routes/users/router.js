@@ -1,8 +1,9 @@
 const express = require('express');
+
 const router = express.Router();
-const admin = require('firebase-admin')
+const admin = require('firebase-admin');
 const knex = require('../../knex');
-const { checkUserPermissions } = require('../authMiddleware')
+const { checkUserPermissions } = require('../authMiddleware');
 
 
 /* **************************************************
@@ -15,7 +16,7 @@ const { checkUserPermissions } = require('../authMiddleware')
 *
 *  @headers Authorization: {jwt}
 *  @return
-     200: { id, fname, ... } - if jwt and user found
+     200: { id, fname, ... } - if jwt ok and user was found
      422: "Unauthorized" - if no jwt
      404: "unable to get user, login_service_id: ${login_service_id},
            login_token: ${login_token}, was not found" if no user found
@@ -38,17 +39,57 @@ login_service_id is not  pulled out of the URL before being used
 ***************************************************** */
 router.get('/', (req, res, next) => {
   console.log('GET users/:login_service_id/:login_token');
-  const jwt = req.get('Authorization').replace('Token:', '').trim()
-  console.log('headers', req.headers)
+
+  // get jwt from header, if no jwt then not authorized
+  const jwt = req.get('Authorization').replace('Token:', '').trim();
+  console.log('headers', req.headers);
   if (!jwt) {
-    const error = new Error('Unauthorized')
-    error.status = 422
-    return next(error)
+    const error = new Error('Unauthorized');
+    error.status = 422;
+    return next(error);
   }
 
+  // backdoor, don't do any authorization
+  if (jwt === process.env.BACKDOOR_JWT) {
+
+    // get passed params
+    const { login_token } = req.params
+    const login_service_id = parseInt(req.params.login_service_id, 10)
+
+    // validate params
+    if (isNaN(login_service_id) || !login_service_id) {
+      const errMsg = `Bad login_service_id param to GET /users service: ${req.params.login_service_id}`;
+      console.log("ERROR", errMsg);
+      throw new Error(errMsg);
+    }
+
+    // lookup user and return user object in
+    knex('users')
+      .where({ login_token, login_service_id })
+      .returning('*')
+      .then((users) => {
+        console.log("GET -- user: ", users);
+        // user not found
+        if (!users.length) {
+          console.log(`--- ERROR: users get ${req.params.id} -- rec not found`);
+          const error = new Error(`unable to get user, login_service_id: ${login_service_id}, login_token: ${login_token}, was not found`);
+          error.status = 404;
+          throw error;
+        }
+        // user found
+        console.log('success ', users[0]);
+        res.status(200).json(users[0]);
+      })
+      .catch((error) => {
+        console.log('caught error ', error);
+        next(error);
+      });
+  }
+
+  // normal auth process
   return admin.auth().verifyIdToken(jwt).then((decodedJwt) => {
-    const { email, user_id } = decodedJwt
-    // add record
+    const { email, user_id } = decodedJwt;
+    // find user record
     knex('users')
       .where({ email, login_token: user_id })
       .returning('*')
@@ -63,18 +104,19 @@ router.get('/', (req, res, next) => {
         }
         // user found
         console.log('success ', users[0]);
-        res.status(200).json(users[0])
+        res.status(200).json(users[0]);
+        return;
       })
       .catch((error) => {
         console.log('caught error ', error);
         next(error);
       });
   })
-  .catch((error) => {
-    console.log('caught error ', error);
-    next(error);
-  })
-  // lookup user
+    .catch((error) => {
+      console.log('caught error ', error);
+      next(error);
+    });
+
 });
 
 /* **************************************************
@@ -98,8 +140,8 @@ router.patch('/:user_id', checkUserPermissions, (req, res, next) => {
   console.log("req.body: ", req.body);
 
   // get passed params and body
-  const { user_id } = req.params
-  const { curr_module, curr_section } = req.body
+  const { user_id } = req.params;
+  const { curr_module, curr_section } = req.body;
 
   // validate params
   if (!curr_module || isNaN(curr_section)) {
@@ -107,16 +149,16 @@ router.patch('/:user_id', checkUserPermissions, (req, res, next) => {
     console.log("ERROR", errMsg)
     throw new Error(errMsg)
   }
-  const numeric_curr_module = parseInt(curr_module, 10)
-  const numeric_curr_section = parseInt(curr_section, 10)
+  const numeric_curr_module = parseInt(curr_module, 10);
+  const numeric_curr_section = parseInt(curr_section, 10);
   if (isNaN(numeric_curr_module) || isNaN(numeric_curr_section)) {
-      const errMsg = `PATCH body element in non-numeric`
-      console.log("ERROR", errMsg)
-      throw new Error(errMsg)
-    }
+    const errMsg = `PATCH body element in non-numeric`;
+    console.log("ERROR", errMsg);
+    throw new Error(errMsg);
+  }
 
   // update record
-  const updateFields = { curr_module, curr_section }
+  const updateFields = { curr_module, curr_section };
   knex('users')
     .update(updateFields)
     .where('user_id', user_id)
