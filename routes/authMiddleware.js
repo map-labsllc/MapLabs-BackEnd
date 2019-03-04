@@ -9,9 +9,13 @@ module.exports = {
     Tests the authorization header jwt and param user_id
   ******************************************************** */
   checkUserPermissions(req, res, next) {
+    console.log("checkUserPermissions()");
 
     const jwt = req.get('Authorization').replace('Token:', '').trim();
     const mapMakerUserId = req.params.user_id;
+
+    console.log("-- req.params.user_id: ", req.params.user_id);
+    console.log("-- jwt: ", jwt);
 
     if (!jwt || !mapMakerUserId) {
       console.log("UNAUTHORIZED returning 422: req.params.user_id:", req.params.user_id, " jwt:", jwt);
@@ -22,7 +26,7 @@ module.exports = {
 
     // backdoor
     if (jwt === process.env.BACKDOOR_JWT) {
-      console.log("checkUserPermissions() short-circuit backdoor");
+      console.log("-- short-circuit backdoor");
       return next();
     }
 
