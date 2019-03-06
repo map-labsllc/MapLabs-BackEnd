@@ -2,6 +2,7 @@
 const dotenv = require('dotenv')
 dotenv.config()
 
+
 const admin = require('firebase-admin')
 
 //see https://firebase.google.com/docs/admin/setup
@@ -25,10 +26,6 @@ const logger = require('morgan')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users/router')
 const answersRouter = require('./routes/answers/router')
-const transitionsRouter = require('./routes/transitions/router')
-const lifeDescriptionsRouter = require('./routes/lifeDescriptions/router')
-const influencesRouter = require('./routes/influences/router')
-
 
 // boilerplate
 const app = express()
@@ -48,14 +45,10 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
-
 // setup routes
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/answers', answersRouter)
-app.use('/transitions', transitionsRouter)
-app.use('/lifeDescriptions', lifeDescriptionsRouter)
-app.use('/influences', influencesRouter)
 
 // ===========================================================
 // catch 404 and forward to error handler

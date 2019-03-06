@@ -4,7 +4,11 @@ exports.up = function(knex, Promise) {
     table.increments("answer_id").primary()
     table.integer('user_id').notNullable()
     table.integer('question_code').notNullable()
-    table.text('answer').notNullable()
+    table.integer('question_type').notNullable()
+    table.text('field1').notNullable().defaultTo("")
+    table.text('field2').notNullable().defaultTo("")
+    table.text('field3').notNullable().defaultTo("")
+    table.text('field4').notNullable().defaultTo("")
 
     table.foreign('user_id').references('users.user_id').onDelete('cascade')
   })
