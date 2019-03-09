@@ -20,10 +20,10 @@ const { checkUserPermissions } = require('../authMiddleware')
 *
 *  Return object keyed on question_code with values as 2D array of 1 to 4
    strings, depending on the specific question
-     200: { 3: [ [ 'bad!', 'good!', '', '' ],
+     200: { 3: [ [ 'bad!', 'good!', '', '', '', '' ],
                  [ ... ]
                ] ,
-            4: [ [ 'honesty', 'thoughts', 'broadly', '' ],
+            4: [ [ 'honesty', 'thoughts', 'broadly', '', '', '' ],
                  [ ... ]
                ]
           }
@@ -69,8 +69,8 @@ router.get('/:user_id', checkUserPermissions, (req, res, next) => {
             currAnswerSet = []
           }
           // add answer to the current answer set
-          const { field1, field2, field3, field4 } = answerRecords[i]
-          currAnswerSet.push( [ field1, field2, field3, field4 ] );
+          const { field1, field2, field3, field4, field5, field6 } = answerRecords[i]
+          currAnswerSet.push( [ field1, field2, field3, field4, field5, field6 ] );
         }
         retVal[currQuestionCode] = currAnswerSet
       }
@@ -157,6 +157,8 @@ router.post('/:user_id/:question_code/:question_type', checkUserPermissions, (re
     field2: answer[1] || "", // optional field
     field3: answer[2] || "", // optional field
     field4: answer[3] || "", // optional field
+    field5: answer[4] || "", // optional field
+    field6: answer[5] || "", // optional field
   }))
 
   // delete any exisiting answers for this question_code and user_id

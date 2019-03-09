@@ -9,6 +9,8 @@ exports.up = function(knex, Promise) {
     table.text('field2').notNullable().defaultTo("")
     table.text('field3').notNullable().defaultTo("")
     table.text('field4').notNullable().defaultTo("")
+    table.text('field5').notNullable().defaultTo("")
+    table.text('field6').notNullable().defaultTo("")
 
     table.foreign('user_id').references('users.user_id').onDelete('cascade')
   })
