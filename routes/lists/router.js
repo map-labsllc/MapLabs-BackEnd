@@ -19,7 +19,7 @@ router.get('/:list_name', (req, res, next) => {
     .select('options.id', 'options.value')
     .join('lists', {'lists.id': 'options.list_id'})
     .where('lists.name', list_name)
-    .orderBy(['options.value'])
+    .orderBy(['options.sort, options.value'])
     .returning('*')
     .then((data) => {
       console.log(data)
