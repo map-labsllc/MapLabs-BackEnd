@@ -36,7 +36,7 @@ module.exports = {
         const { email, user_id } = decodedJwt
         // find user record
         knex('users')
-          .where({ email, login_token: user_id, user_id: mapMakerUserId })
+          .where({ email, login_token: user_id, id: mapMakerUserId })
           .returning('*')
           .then((users) => {
             console.log("GET -- user: ", users);
