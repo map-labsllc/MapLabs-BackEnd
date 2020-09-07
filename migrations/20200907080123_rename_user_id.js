@@ -1,12 +1,11 @@
-
 exports.up = function(knex, Promise) {
   return knex.schema.table('users', function(table) {
-    table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now())
+    table.renameColumn('user_id', 'id')
   })
-}
+};
 
 exports.down = function(knex, Promise) {
   return knex.schema.table('users', function(table) {
-    table.timestamp('updated_at').notNullable().defaultTo(knex.fn.now())
+    table.renameColumn('id', 'user_id')
   })
-}
+};

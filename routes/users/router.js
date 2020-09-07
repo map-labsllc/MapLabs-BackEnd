@@ -163,7 +163,7 @@ router.patch('/:user_id', checkUserPermissions, (req, res, next) => {
 
   knex('users')
     .update(updateFields)
-    .where('user_id', user_id)
+    .where('id', user_id)
     .returning('*')
     .then((users) => {
       // user not found
@@ -205,7 +205,6 @@ router.post('/', (req, res, next) => {
   // get passed params and body
   const { fname, lname } = req.body
   const jwt = req.get('Authorization').replace('Token:', '').trim()
-
 
   // validate params
   if (!fname || !lname || !jwt) {

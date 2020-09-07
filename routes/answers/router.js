@@ -49,7 +49,7 @@ router.get('/:user_id', checkUserPermissions, (req, res, next) => {
   // lookup all answers for user
   knex('answers')
     .where('user_id', user_id)
-    .orderBy(['question_code', 'answer_id']) // group the questions and put in order they were added
+    .orderBy(['question_code', 'id']) // group the questions and put in order they were added
     .returning('*')
     .then((answerRecords) => {
 
@@ -58,7 +58,7 @@ router.get('/:user_id', checkUserPermissions, (req, res, next) => {
       const retVal = {}
 
       if (answerRecords.length) {
-        // build 2D array od strings data structure to return
+        // build 2D array of strings data structure to return
         let currQuestionCode = answerRecords[0].question_code
         let currAnswerSet = []
         for (let i = 0; i < answerRecords.length; i++) {
