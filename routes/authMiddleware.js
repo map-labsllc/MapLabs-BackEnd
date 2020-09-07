@@ -25,10 +25,10 @@ module.exports = {
     }
 
     // backdoor
-    if (jwt === process.env.BACKDOOR_JWT) {
-      console.log("-- short-circuit backdoor");
-      return next();
-    }
+    // if (jwt === process.env.BACKDOOR_JWT) {
+    //   console.log("-- short-circuit backdoor");
+    //   return next();
+    // }
 
     return admin.auth()
       .verifyIdToken(jwt)

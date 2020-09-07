@@ -2,17 +2,13 @@
 const dotenv = require('dotenv')
 dotenv.config()
 
-
 const admin = require('firebase-admin')
+var serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
 
 //see https://firebase.google.com/docs/admin/setup
 //set up firebase admin to check jwts
 admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: JSON.parse(process.env.FIREBASE_PRIVATE_KEY)
-  }),
+  credential: admin.credential.cert(serviceAccount),
   databaseURL: process.env.FIREBASE_DB_URL
 })
 

@@ -30,7 +30,7 @@ http GET localhost:3001/users/1/ABC_TOKEN_FROM_FIREBASE
 
 TO fix
 ======
-login_service_id is not  pulled out of the URL before being used
+login_service_id is not pulled out of the URL before being used
 
 
 
@@ -49,42 +49,42 @@ router.get('/', (req, res, next) => {
     return next(error);
   }
 
-  // backdoor, don't do any authorization
-  if (jwt === process.env.BACKDOOR_JWT) {
+  // // backdoor, don't do any authorization
+  // if (jwt === process.env.BACKDOOR_JWT) {
 
-    // get passed params
-    const { login_token } = req.params
-    const login_service_id = parseInt(req.params.login_service_id, 10)
+  //   // get passed params
+  //   const { login_token } = req.params
+  //   const login_service_id = parseInt(req.params.login_service_id, 10)
 
-    // validate params
-    if (isNaN(login_service_id) || !login_service_id) {
-      const errMsg = `Bad login_service_id param to GET /users service: ${req.params.login_service_id}`;
-      console.log("ERROR", errMsg);
-      throw new Error(errMsg);
-    }
+  //   // validate params
+  //   if (isNaN(login_service_id) || !login_service_id) {
+  //     const errMsg = `Bad login_service_id param to GET /users service: ${req.params.login_service_id}`;
+  //     console.log("ERROR", errMsg);
+  //     throw new Error(errMsg);
+  //   }
 
-    // lookup user and return user object in
-    knex('users')
-      .where({ login_token, login_service_id })
-      .returning('*')
-      .then((users) => {
-        console.log("GET -- user: ", users);
-        // user not found
-        if (!users.length) {
-          console.log(`--- ERROR: users get ${req.params.id} -- rec not found`);
-          const error = new Error(`unable to get user, login_service_id: ${login_service_id}, login_token: ${login_token}, was not found`);
-          error.status = 404;
-          throw error;
-        }
-        // user found
-        console.log('success ', users[0]);
-        res.status(200).json(users[0]);
-      })
-      .catch((error) => {
-        console.log('caught error ', error);
-        next(error);
-      });
-  }
+  //   // lookup user and return user object in
+  //   knex('users')
+  //     .where({ login_token, login_service_id })
+  //     .returning('*')
+  //     .then((users) => {
+  //       console.log("GET -- user: ", users);
+  //       // user not found
+  //       if (!users.length) {
+  //         console.log(`--- ERROR: users get ${req.params.id} -- rec not found`);
+  //         const error = new Error(`unable to get user, login_service_id: ${login_service_id}, login_token: ${login_token}, was not found`);
+  //         error.status = 404;
+  //         throw error;
+  //       }
+  //       // user found
+  //       console.log('success ', users[0]);
+  //       res.status(200).json(users[0]);
+  //     })
+  //     .catch((error) => {
+  //       console.log('caught error ', error);
+  //       next(error);
+  //     });
+  // }
 
   // normal auth process
   return admin.auth().verifyIdToken(jwt).then((decodedJwt) => {
