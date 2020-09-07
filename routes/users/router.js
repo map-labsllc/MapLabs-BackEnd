@@ -33,9 +33,6 @@ TO fix
 login_service_id is not pulled out of the URL before being used
 
 
-
-
-
 ***************************************************** */
 router.get('/', (req, res, next) => {
   console.log('GET users/:login_service_id/:login_token');
@@ -158,7 +155,12 @@ router.patch('/:user_id', checkUserPermissions, (req, res, next) => {
   }
 
   // update record
-  const updateFields = { curr_module, curr_section };
+  const updateFields = { 
+    curr_module, 
+    curr_section, 
+    'updated_at': knex.fn.now() 
+  };
+
   knex('users')
     .update(updateFields)
     .where('user_id', user_id)
