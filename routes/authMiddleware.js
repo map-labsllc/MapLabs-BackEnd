@@ -24,12 +24,6 @@ module.exports = {
       return next(error);
     }
 
-    // backdoor
-    // if (jwt === process.env.BACKDOOR_JWT) {
-    //   console.log("-- short-circuit backdoor");
-    //   return next();
-    // }
-
     return admin.auth()
       .verifyIdToken(jwt)
       .then((decodedJwt) => {

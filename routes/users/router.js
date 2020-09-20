@@ -46,42 +46,6 @@ router.get('/', (req, res, next) => {
     return next(error);
   }
 
-  // // backdoor, don't do any authorization
-  // if (jwt === process.env.BACKDOOR_JWT) {
-
-  //   // get passed params
-  //   const { login_token } = req.params
-  //   const login_service_id = parseInt(req.params.login_service_id, 10)
-
-  //   // validate params
-  //   if (isNaN(login_service_id) || !login_service_id) {
-  //     const errMsg = `Bad login_service_id param to GET /users service: ${req.params.login_service_id}`;
-  //     console.log("ERROR", errMsg);
-  //     throw new Error(errMsg);
-  //   }
-
-  //   // lookup user and return user object in
-  //   knex('users')
-  //     .where({ login_token, login_service_id })
-  //     .returning('*')
-  //     .then((users) => {
-  //       console.log("GET -- user: ", users);
-  //       // user not found
-  //       if (!users.length) {
-  //         console.log(`--- ERROR: users get ${req.params.id} -- rec not found`);
-  //         const error = new Error(`unable to get user, login_service_id: ${login_service_id}, login_token: ${login_token}, was not found`);
-  //         error.status = 404;
-  //         throw error;
-  //       }
-  //       // user found
-  //       console.log('success ', users[0]);
-  //       res.status(200).json(users[0]);
-  //     })
-  //     .catch((error) => {
-  //       console.log('caught error ', error);
-  //       next(error);
-  //     });
-  // }
 
   // normal auth process
   return admin.auth().verifyIdToken(jwt).then((decodedJwt) => {
@@ -215,7 +179,15 @@ router.post('/', (req, res, next) => {
 
   return admin.auth().verifyIdToken(jwt).then((decodedJwt) => {
     const { email, user_id } = decodedJwt
-    const newUser = { fname, lname, email, login_token: user_id }
+    const newUser = { 
+      fname, 
+      lname, 
+      email, 
+      login_token: user_id,
+      curr_module: 1, // hard code first module (this will need to change when there's more than one course)
+      curr_section: 110 // hard code first section (bad)
+     }
+
     // add record
     knex('users')
       .insert(newUser)
