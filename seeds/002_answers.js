@@ -7,7 +7,7 @@ exports.seed = (knex, Promise) => {
       ])
     .then(() => {
 			 // Moves id column (PK) auto-incremented to correct value after inserts
-			return knex.raw(`SELECT setval('answers_id_seq', (SELECT MAX(id) FROM answers))`)
+			return knex.raw(`SELECT setval('answers_answer_id_seq', (SELECT MAX(id) FROM answers))`)
 		})
   });
 };
