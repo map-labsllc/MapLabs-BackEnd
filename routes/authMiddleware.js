@@ -16,7 +16,7 @@ module.exports = {
       const error = new Error('Unauthorized');
       error.status = 422;
       return next(error);
-    })
+    }
 
     const jwt = req.get('Authorization').replace('Token:', '').trim();
     const mapMakerUserId = +req.params.user_id;
