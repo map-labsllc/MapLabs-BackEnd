@@ -11,8 +11,15 @@ module.exports = {
   checkUserPermissions(req, res, next) {
     console.log("checkUserPermissions()");
 
+    const Authorization = req.get('Authorization')
+    if (!Authorization) {
+      const error = new Error('Unauthorized');
+      error.status = 422;
+      return next(error);
+    })
+
     const jwt = req.get('Authorization').replace('Token:', '').trim();
-    const mapMakerUserId = req.params.user_id;
+    const mapMakerUserId = +req.params.user_id;
 
     console.log("-- req.params.user_id: ", req.params.user_id);
     console.log("-- jwt: ", jwt);
