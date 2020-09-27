@@ -34,18 +34,11 @@ login_service_id is not pulled out of the URL before being used
 
 
 ***************************************************** */
-router.get('/', (req, res, next) => {
+router.get('/', checkUserPermissions, (req, res, next) => {
   console.log('GET users/:login_service_id/:login_token');
 
   // get jwt from header, if no jwt then not authorized
   const jwt = req.get('Authorization').replace('Token:', '').trim();
-  console.log('headers', req.headers);
-  if (!jwt) {
-    const error = new Error('Unauthorized');
-    error.status = 422;
-    return next(error);
-  }
-
 
   // normal auth process
   return admin.auth().verifyIdToken(jwt).then((decodedJwt) => {
