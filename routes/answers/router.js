@@ -32,7 +32,6 @@ const { checkUserPermissions } = require('../authMiddleware')
 http GET localhost:3001/answers/3
 ***************************************************** */
 router.get('/:user_id', checkUserPermissions, (req, res, next) => {
-//router.get('/:user_id',  (req, res, next) => {
 
   console.log('GET answers/:user_id');
 
@@ -140,7 +139,7 @@ router.post('/:user_id/:question_code/:question_type', checkUserPermissions, (re
 
   // -- answers
   let { answers } = req.body
-  console.log('answers: ', answers);
+  // console.log('answers: ', answers);
 
   // this typeof is required to be able to test function with HTTPie
   // -- answers will be a string when called from HTTPie
@@ -169,7 +168,7 @@ router.post('/:user_id/:question_code/:question_type', checkUserPermissions, (re
     })
     .del()
     .then(() => {
-
+      console.log("inserting answers", answerRecords)
       // insert answer records
       knex('answers')
         .insert(answerRecords)
