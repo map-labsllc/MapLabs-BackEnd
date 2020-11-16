@@ -185,7 +185,7 @@ router.post('/', (req, res, next) => {
       email, 
       login_token: user_id,
       curr_module: 1, // hard code first module (this will need to change when there's more than one course)
-      curr_section: 110 // hard code first section (bad)
+      curr_section: 0 // hard code intro
      }
 
     // add record
