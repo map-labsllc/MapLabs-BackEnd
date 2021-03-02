@@ -5,6 +5,7 @@ Development runs on port 3001
 ## Knex migrations and seeds (for initial local setup only)
 `
 knex migrate:latest
+
 knex seed:run
 `
 
